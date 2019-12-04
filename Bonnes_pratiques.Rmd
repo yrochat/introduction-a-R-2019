@@ -1,0 +1,1485 @@
+---
+title: "Bonnes Pratiques"
+author: "Jean-Pierre Müller (jean-pierre.muelller@unil.ch)"
+date: "22 novembre 2018"
+mathjax: local
+self_contained: true
+output: 
+    ioslides_presentation:
+        mathjax: local
+        self_contained: FALSE
+
+---
+
+# Introduction
+
+```{r setup, echo=FALSE}
+
+### knitr::opts_chunk$set(echo = FALSE)
+### options( width=44 )
+
+library(knitr)
+
+### from https://rmarkdown.rstudio.com/articles_verbatim2.html
+knitr::knit_hooks$set(source = function(x, options){
+  if (!is.null(options$verbatim1) && options$verbatim1){
+    opts = gsub(",\\s*verbatim1\\s*=\\s*TRUE\\s*", "", options$params.src)
+    bef = sprintf('\n\n    ```{r %s}\n', opts, "\n")
+    stringr::str_c(
+      bef, 
+      knitr:::indent_block(paste(x, collapse = '\n'), "    "), 
+      "\n    ```\n"
+    )
+  } else {
+    stringr::str_c("\n\n```", tolower(options$engine), "\n", 
+      paste(x, collapse = '\n'), "\n```\n\n"
+    )
+  }
+})
+
+
+
+```
+
+
+
+## Buts de cette formation:
+
+
+1. Comprendre ce qu'est "RMarkdown" et pourquoi vous devez l'utiliser
+2. Apprendre à utiliser "RMarkdown" dans différents contextes
+3. Générer des fichiers de différents formats à l'aide de "RMarkdown"
+4. Notebooks : Différentier "RMarkdown" des notebooks "Jupyter" et de l’environnement "Jupyter" et plus généralement de l'environnement `Python`.
+
+
+
+## Reproductibilité --- Réplicabilité
+
+
+Patil Prasad, Peng Roger D. et Leek Jeffrey, « A statistical definition for reproducibility and replicability », bioRxiv, 29.07.2016, p. 066803. En ligne: <https://doi.org/10.1101/066803>, consulté le 14.10.2018.
+
+Reproductibilité     
+: Une équipe indépendante analyse les mêmes données et doit retomber sur les mêmes résultats.             
+        _« à partir des données, en effectuant les mêmes traitements numériques, je dois obtenir les mêmes résultats numériques. »_
+
+
+
+
+Réplicabilité      
+: Une équipe indépendante produit de nouvelles données avec le même design et doit retomber sur des données (et résultats) semblables.   
+      _« toutes choses égales par ailleurs, je dois aboutir aux mêmes conclusions. »_
+                           
+
+
+## Reproductibilité --- Réplicabilité
+
+
+La « reproductibilité » n'est possible que si les logiciels utilisés et les données sont publics.
+
+La « réplicabilité » peut être difficile à atteindre selon le domaine scientifique. Voir tableau 1 page 12 de : Leonelli, Sabina (2018) Re-Thinking Reproducibility as a Criterion for Research Quality. [Preprint] URL: http://philsci-archive.pitt.edu/14352/1/Reproducibility_2018_SL.pdf 
+
+
+# R, Rstudio, Rmarkdown
+
+
+## Une solution : R markdown  
+
+
+- R Markdown permet créer des documents qui contiendront toutes les informations sur vos analyses.
+
+- Vos analyses sont associées à leurs résultats (tableaux, graphiques, ...) et sont enrobées de textes pour les expliquer.
+
+- D'autres personnes peuvent donc comprendre ce que vous avez fait dans vos analyses et être certaines que vous les avez faites correctement.
+
+- Vos fichiers de données, fichiers d'analyses R Markdown peuvent être partagés, ainsi que les fichiers qui en résultent.
+
+
+## Une solution : R markdown  
+
+
+**Références**
+
+Xie Yihui, Allaire J. J. et Grolemund Garrett, R Markdown: The Definitive Guide, 2018. En ligne: <https://bookdown.org/yihui/rmarkdown/>, consulté le 08.09.2018.
+
+« R Markdown », <https://rmarkdown.rstudio.com/>, consulté le 14.10.2018.
+
+« rmarkdown-cheatsheet-2.0.pdf », <https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf>, consulté le 15.10.2018.
+
+
+
+
+## R markdown : Préalables
+
+Les logiciels suivants doivent être installés sur votre machine :
+
+* R ( https://cran.r-project.org/ )
+* RStudio (https://www.rstudio.com/)
+* $\TeX$ --- $\LaTeX$        
+    - ( https://openclassrooms.com/fr/courses/1617396-redigez-des-documents-de-qualite-avec-latex/1617747-installer-latex )
+    - ou dans R :           
+        
+```{r, eval=FALSE, echo=TRUE}
+        # install TinyTeX
+        install.packages("tinytex")                
+        tinytex::install_tinytex()  
+```
+           
+
+## R markdown : les bases 
+
+**Créer un document de base : **
+
+Dans __RStudio__, menu __File__  -> __New File__ -> __R Markdown__.
+
+Saisir un titre, un auteur et valider le dialogue.
+
+
+
+```{r, echo=FALSE, out.width = "33%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/RStudio_065.png")
+```
+
+
+
+## R markdown : les bases (2)
+
+**Un squelette de document est affiché **
+
+
+
+```{r, echo=FALSE, out.width = "40%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/Sélection_066.png")
+```
+
+
+## R markdown : les bases (3)
+
+Cliquer sur le bouton __Knit__, nommer le fichier: une fenêtre avec un document `.html` est affichée.
+
+
+
+```{r, echo=FALSE, out.width = "33%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/fenetre_html.png")
+```
+
+## R markdown : les bases (4)
+
+Dans le dossier où le fichier a été sauvegardé, on a maintenant deux fichiers :
+
+
+```{r, echo=FALSE, out.width = "33%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/Sélection_067.png")
+```
+
+Sélectionner maintenant les articles du menu  __Knit__ : __Knit to PDF__ et __Knit to Word__.
+
+Un document PDF ou un document MSWord sont affichés. Et le dossier contient maintenant 4 fichiers:
+
+
+```{r, echo=FALSE, out.width = "66%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/Sélection_069.png")
+```
+
+
+
+## R markdown : les bases (5)
+
+
+Le fichier du squelette contient maintenant dans la partie `YAML metadata`:
+
+```{r, eval=FALSE, echo=TRUE}
+---
+title: "Untitled"
+author: "Jean-Pierre Müller (jean-pierre.muelller@unil.ch)"
+date: "14 octobre 2018"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+```
+Vous pouvez supprimer les lignes `"pdf_..."`et `"word_..."`.
+
+## R markdown : mise en forme du texte
+
+
+```{r, eval=FALSE, echo=TRUE}
+Texte normal 
+```
+
+Texte normal 
+
+```{r, eval=FALSE, echo=TRUE}
+Pour forcer un retour à la ligne      
+terminer la ligne par deux ou plus signes "espace".
+```
+
+Pour forcer un retour à la ligne      
+terminer la ligne par deux ou plus signes "espace".
+
+```{r, eval=FALSE, echo=TRUE} 
+*Italiciser* et mettre **en gras**   
+```   
+
+*Italiciser* et mettre **en gras**   
+
+## R markdown : mise en forme du texte (2)
+
+
+
+```{r, eval=FALSE, echo=TRUE}  
+Dans un texte, `du texte pré-formaté ou code source` ...  
+```
+
+Dans un texte, `du texte pré-formaté ou code source` ...  
+
+```{r, eval=FALSE, echo=TRUE}
+Exposant^2^
+```
+
+Exposant^2^ 
+
+```{r, eval=FALSE, echo=TRUE}
+indice~2~
+```
+
+Indice~2~
+
+
+## R markdown : mise en forme du texte (3)
+
+
+
+```{r, eval=FALSE, echo=TRUE}
+~~Barré~~   
+```
+
+~~Barré~~ 
+
+
+```{r, eval=FALSE, echo=TRUE}
+caractères spéciaux : \* \_ \\   
+```
+caractères spéciaux : \* \_ \\ 
+
+```{r, eval=FALSE, echo=TRUE}
+endash: --, emdash: ---  
+```
+endash: --, emdash: ---  
+
+## R markdown : mise en forme du texte (4)
+
+
+```{r, eval=FALSE, echo=TRUE}
+> Beware of bugs in the above code; I have only proved it correct, not tried it.
+>
+> ---Donald Knuth
+
+```
+
+
+
+> Beware of bugs in the above code; I have only proved it correct, not tried it.
+>
+>---Donald Knuth
+
+```{r, eval=FALSE, echo=TRUE}
+Ligne horizontale ou séparation dans une présentation
+*** 
+```
+
+
+
+## R markdown : mise en forme du texte (5)
+
+```{r, eval=FALSE, echo=TRUE}
+Définition
+:    MATH. Convention logique a priori. 
+```
+
+
+Définition
+:    MATH. Convention logique a priori.  
+
+
+
+```{r, eval=FALSE, echo=TRUE}
+<!--Commentaire--> 
+```
+
+
+
+    ``` 
+    Bloc de texte pré-formaté 
+      ou 
+    code source
+    ```
+
+
+
+```
+Bloc de texte pré-formaté 
+   ou 
+code source
+```
+
+## R markdown : mise en forme du texte (6)
+
+
+
+```{r, eval=FALSE, echo=TRUE}
+# Titre de Niveau 1 
+## Titre de Niveau 2  
+### Titre de Niveau 3  
+#### Titre de Niveau 4 
+##### Titre de Niveau 5   
+###### Titre de Niveau 6 
+```
+
+
+### Titre de Niveau 3  
+#### Titre de Niveau 4 
+##### Titre de Niveau 5   
+###### Titre de Niveau 6 
+
+
+## R markdown : mise en forme du texte (7)
+
+
+```{r, eval=FALSE, echo=TRUE}
+* liste à puces
+    + élément 1
+    + élément 2
+        - sous-niveau 2
+        - sous-niveau 2
+* liste à puces :  2ème puce (avec 2 espaces en fin de ligne)     
+    Suite (indenté de 4 espaces) 
+* liste à puces : 3ème puce
+```
+
+
+## R markdown : mise en forme du texte (8)
+
+
+* liste à puces
+    + élément 1
+    + élément 2
+        - sous-niveau 2
+        - sous-niveau 2
+* liste à puces :  2ème puce (avec 2 espaces en fin de ligne)     
+    Suite (indenté de 4 espaces) 
+* liste à puces : 3ème puce
+
+## R markdown : mise en forme du texte (9)
+
+
+```{r, eval=FALSE, echo=TRUE}
+1. Liste ordonnée
+2. 2ème élément     
+    i) sous-niveau 1    
+    ii) sous-niveau 2      
+         A. sous-sous-niveau 1    
+         B. sous-sous-niveau 2        
+``` 
+
+
+## R markdown : mise en forme du texte (10)
+
+1. Liste ordonnée
+2. 2ème élément     
+    i) sous-niveau 1    
+    ii) sous-niveau 2      
+         A. sous-sous-niveau 1    
+         B. sous-sous-niveau 2   
+         
+         
+
+
+## R markdown : tableaux simples
+
+
+```{r, eval=FALSE, echo=TRUE}
+| Right | Left | Default | Center | 
+|------:|:-----|---------|:------:| 
+|   12  |  12  |    12   |    12  | 
+|  123  |  123 |   123   |   123  | 
+|    1  |    1 |     1   |     1  | 
+```
+
+
+| Right | Left | Default | Center | 
+|------:|:-----|---------|:------:| 
+|   12  |  12  |    12   |    12  | 
+|  123  |  123 |   123   |   123  | 
+|    1  |    1 |     1   |     1  |
+
+
+
+## R markdown : liens 
+
+
+```{r, eval=FALSE, echo=TRUE}
+lien explicite : <http://www.unil.ch>   
+[lien vers UNIL](http://www.unil.ch)   
+```
+lien explicite : <http://www.unil.ch>   
+[lien vers UNIL](http://www.unil.ch)   
+    
+
+## R markdown : Images
+
+
+Il est recommandé de créer un dossier contenant les images
+à insérer dans le document. Par exemple, pour les logos unil,
+créés à partir de http://unilogo.unil.ch :
+
+```{r, eval=FALSE, echo=TRUE}
+![Légende : logo unil](unilogo_logos/      
+                    Word-Excel-Powerpoint/unilogo_bleu_300dpi.png)
+```
+
+## R markdown : Images (2)
+
+
+
+![Légende : logo unil](unilogo_logos/Word-Excel-Powerpoint/unilogo_bleu_300dpi.png) 
+
+
+
+## R markdown : code R
+
+
+**Morceaux de code R (code chunks)**
+
+Il existe deux modes pour les morceaux de code R:
+
+```{r, echo=FALSE}
+a <- sprintf(' ```{r cars} \n summary(cars)   \n ```     ') 
+```
+
+```
+`r a`
+``` 
+
+et 
+
+```{r, echo=FALSE}
+a <- sprintf(' `r mean(cars$speed)` ')
+```
+ 
+```
+La moyenne des vitesses est de 
+`r a` Mph. 
+``` 
+## R markdown : code R (2)
+
+
+```{r}
+summary(cars)
+```
+
+
+La moyenne des vitesses est de `r mean(cars$speed)` Mph.
+
+## R markdown : code R (3)
+
+
+**Instructions d'évaluation des Code Chunks **
+
+`eval=` 
+:    évaluer le bloc ?
+
+`echo=` 	
+:    afficher le code	?
+
+`warning=` 	
+:    afficher les alertes?
+
+`error=` 	
+:    afficher les erreurs?
+
+`message=` 
+:    afficher les messages?
+
+## R markdown : code R (4)
+
+
+**Instructions d'évaluation des Code Chunks **
+
+`tidy=`	
+:    formater le code selon les normes ?
+
+`results=` 
+:    forme des résultats, "hide", "asis", “markup”.
+
+`fig.width=`, `fig.height=` 
+:    dimensions (en pouces) des graphiques.
+
+`fig.align=` 
+:    alignement de la figure,	"left", "right", "center".
+
+## R markdown : code R (5)
+
+* Menu Global
+
+```{r, echo=FALSE,  out.width = "33%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/070.png")
+```
+
+* Boutons locaux
+
+```{r, echo=FALSE, out.width = "10%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/072.png")
+```
+
+
+
+## R markdown : afficher des résultats
+
+
+L'affichage des résultats par défaut est celui de R.
+
+Il possible d'obtenir des résultats de meilleure qualité en : 
+
+* effectuant les calculs dans un bloc avec l'instruction `echo=FALSE`.
+* en affichant le résultat à l'aide d'un bloc spécifique.
+
+L'affichage des résultats peut se faire en utilisant des fonctions des 
+
+```{r, eval=FALSE, echo=TRUE}
+library("knitr")
+library("pander")
+library("papeR")
+library("stargazer")
+```
+
+
+
+
+## R markdown : afficher des résultats
+
+
+**knitr::kable (exemple de la vignette)**
+
+Avec les instructions: `{r, echo=FALSE, results='asis'}`
+
+```{r, eval=FALSE, echo=TRUE}
+kable(iris[1:4,], align=c('l', 'c', 'r', 'l', 'r'))
+```
+
+```{r, echo=FALSE, results='asis'}
+kable(iris[1:4,], align=c('l', 'c', 'r', 'l', 'r'))
+```
+
+
+## R markdown : afficher des résultats
+
+
+**knitr::kable (exemple de la vignette)**
+
+Avec les instructions: `{r, echo=FALSE, results='asis'}`
+
+```{r, eval=FALSE, echo=TRUE}
+kable(mtcars[1:4, 1:4], booktabs=TRUE)
+```
+
+```{r, echo=FALSE, results='asis'}
+kable(mtcars[1:4, 1:4], booktabs=TRUE)
+```
+
+
+
+
+
+## R markdown : afficher des résultats
+
+
+**pander (exemple de la vignette)**
+
+Avec les instructions: `{r, echo=FALSE, results='asis'}`
+
+```{r, eval=FALSE, echo=TRUE}
+library("pander")
+t <- mtcars[1:3, 1:5]
+emphasize.italics.cols(1)
+emphasize.italics.rows(1)
+emphasize.strong.cells(which(t > 20, arr.ind = TRUE))
+pandoc.table(t)
+```
+
+
+## R markdown : afficher des résultats
+
+
+
+```{r, echo=FALSE, results='asis'}
+library(pander)
+t <- mtcars[1:3, 1:5]
+emphasize.italics.cols(1)
+emphasize.italics.rows(1)
+emphasize.strong.cells(which(t > 20, arr.ind = TRUE))
+pandoc.table(t)
+```
+
+
+## R markdown : afficher des résultats
+
+**papeR (exemple de la vignette)**
+
+
+Avec les instructions: `{r, results='hide', message=FALSE}`
+
+```{r, eval=FALSE, echo=TRUE}
+library("papeR")
+library("nlme")
+(tab1 <- summarize(Orthodont, type = "numeric"))
+```
+
+Avec les instructions: `{r, echo=FALSE, results='asis'}`
+
+```{r, eval=FALSE, echo=TRUE}
+kable(tab1)
+```
+
+
+## R markdown : afficher des résultats
+
+
+
+```{r, echo=FALSE, results='hide', message=FALSE}
+library("papeR")
+library("nlme")
+(tab1 <- summarize(Orthodont, type = "numeric"))
+```
+
+```{r, echo = FALSE, results = 'asis'}
+kable(tab1)
+```
+
+
+
+## R markdown : afficher des résultats
+
+**papeR (exemple de la vignette)**
+
+
+Avec les instructions: `{r, results='hide', message=FALSE}`
+
+```{r, eval=FALSE, echo=TRUE}
+library("papeR")
+library("nlme")
+(tab3 <- summarize(Orthodont, type = "factor", 
+                              variables = "Sex", 
+                              cumulative = TRUE))
+```
+
+Avec les instructions: `{r, echo=FALSE, results='asis'}`
+
+```{r, eval=FALSE, echo=TRUE}
+kable(tab3)
+```
+
+
+## R markdown : afficher des résultats
+
+
+
+```{r, echo=FALSE, results='hide', message=FALSE}
+library("papeR")
+library("nlme")
+(tab3 <- summarize(Orthodont, type = "factor", 
+                              variables = "Sex", 
+                              cumulative = TRUE))
+```
+
+```{r, echo = FALSE, results = 'asis'}
+kable(tab3)
+```
+
+
+## R markdown : afficher des résultats
+
+**papeR (exemple de la vignette)**
+
+
+Avec les instructions: `{r, results='hide', message=FALSE}`
+
+```{r, eval=FALSE, echo=TRUE}
+library("papeR")
+library("nlme")
+(tab4 <- summarize(Orthodont, type = "numeric", 
+                              group = "Sex", 
+                              test = FALSE))
+```
+
+Avec les instructions: `{r, echo=FALSE, results='asis'}`
+
+```{r, eval=FALSE, echo=TRUE}
+kable(tab4)
+```
+
+
+## R markdown : afficher des résultats
+
+
+
+```{r, echo=FALSE, results='hide', message=FALSE}
+library("papeR")
+library("nlme")
+(tab4 <- summarize(Orthodont, type = "numeric", 
+                              group = "Sex", 
+                              test = FALSE))
+```
+
+```{r, echo = FALSE, results = 'asis'}
+kable(tab4)
+```
+
+
+
+## R markdown : afficher des résultats
+
+**papeR (exemple de la vignette)**
+
+
+Avec les instructions: `{r, results='hide', message=FALSE}`
+
+```{r, eval=FALSE, echo=TRUE}
+library("papeR")
+library("nlme")
+data(Orthodont, package = "nlme")
+linmod <- lm(distance ~ age + Sex, data = Orthodont)
+## Extract pretty summary
+(pretty_lm <- prettify(summary(linmod)))
+```
+
+Avec les instructions: `{r, echo=FALSE, results='asis'}`
+
+```{r, eval=FALSE, echo=TRUE}
+kable(pretty_lm)
+```
+
+
+## R markdown : afficher des résultats
+
+
+
+```{r, echo=FALSE, results='hide', message=FALSE}
+library("papeR")
+library("nlme")
+data(Orthodont, package = "nlme")
+linmod <- lm(distance ~ age + Sex, data = Orthodont)
+## Extract pretty summary
+(pretty_lm <- prettify(summary(linmod)))
+```
+
+```{r, echo = FALSE, results = 'asis'}
+kable(pretty_lm)
+```
+
+
+
+
+
+
+## R markdown : afficher des résultats
+
+**stargazer (exemple de la vignette)**
+
+
+Avec les instructions: `{r, echo = FALSE, message=FALSE, results='asis'}
+
+```{r, eval=FALSE, echo=TRUE}
+library("stargazer")
+stargazer(attitude, type="html")
+```
+
+```{r, echo = FALSE, message=FALSE, results='asis'}
+library("stargazer")
+stargazer(attitude, type="html")
+```
+
+
+
+
+
+## R markdown : afficher des résultats
+
+**stargazer (exemple de la vignette)**
+
+
+Avec les instructions: `{r, echo = FALSE, message=FALSE, results='asis'}
+
+```{r, eval=FALSE, echo=TRUE}
+library("stargazer")
+##  2 OLS models
+linear.1 <- lm(rating ~ complaints + privileges + learning + raises + critical,
+data=attitude)
+linear.2 <- lm(rating ~ complaints + privileges + learning, data=attitude)
+## create an indicator dependent variable, and run a probit model
+attitude$high.rating <- (attitude$rating > 70)
+probit.model <- glm(high.rating ~ learning + critical + advance, data=attitude,
+family = binomial(link = "probit"))
+stargazer(linear.1, linear.2, probit.model, title="Results", align=TRUE, type="html")
+```
+
+
+## R markdown : afficher des résultats
+
+```{r, echo = FALSE, message=FALSE, results='asis'}
+library("stargazer")
+library("stargazer")
+##  2 OLS models
+linear.1 <- lm(rating ~ complaints + privileges + learning + raises + critical,
+data=attitude)
+linear.2 <- lm(rating ~ complaints + privileges + learning, data=attitude)
+## create an indicator dependent variable, and run a probit model
+attitude$high.rating <- (attitude$rating > 70)
+probit.model <- glm(high.rating ~ learning + critical + advance, data=attitude,
+family = binomial(link = "probit"))
+stargazer(linear.1, linear.2, probit.model, title="Results", align=TRUE, type="html")
+```
+
+## R markdown : afficher des résultats
+
+Lors de la production de fichiers ".pdf" supprimer 
+` type="html" `dans les paramètres
+de la fonction `stargazer()`.
+
+## R markdown : afficher des résultats
+
+**rapport**
+
+http://rapport-package.info/
+
+
+```{r}
+library("rapport")
+```
+
+## R markdown : 
+
+**kableExtra**
+
+http://haozhu233.github.io/kableExtra/
+
+« Create Awesome HTML Table with knitr::kable and kableExtra », <https://haozhu233.github.io/kableExtra/awesome_table_in_html.html>, consulté le 08.09.2018.
+
+```{r, eval=FALSE, echo=TRUE}
+library(kableExtra)
+```
+
+
+
+## R markdown : notes de bas de page
+
+```{r, eval=FALSE, echo=TRUE}
+notes de bas de page, par exemple[^1] 
+
+[^1]: texte de la note
+```
+#### Ne marche pas dans une présentation!
+
+notes de bas de page, par exemple[^1] 
+
+[^1]: texte de la note
+
+
+## R markdown : équations mathématiques
+
+
+```{r, eval=FALSE, echo=TRUE}
+Formule $(x_i-\overline{x})^2$ dans un texte
+```
+
+
+
+Formule  $(x_i-\overline{x})^2$  dans un texte
+
+```{r, eval=FALSE, echo=TRUE}
+Bloc mathématique centré: $$\frac{1}{n} \sum^{n}_{i=1}E(X_i)$$
+``` 
+
+
+Bloc mathématique centré: $$\frac{1}{n} \sum^{n}_{i=1}E(X_i)$$
+
+## R markdown : équations math. (2)
+
+
+Une feuille de triche simple...
+
+« undergradmath.pdf », <http://joshua.smcvt.edu/undergradmath/undergradmath.pdf>, consulté le 17.10.2018.
+
+
+Plus compliquée :
+
+Lammarsch Marion, « LaTeX Cheat Sheet », p. 4. En ligne: <ftp://ftp.dante.de/tex-archive/info/latex-refsheet/LaTeX_RefSheet.pdf>, consulté le 17.10.2018.
+
+
+## R markdown : citer
+
+Télécharger un fichier `.csl` de https://www.zotero.org/styles et le placer dans le même dossier que le fichier R Makdown.
+
+Ajouter dans l'entête YAML du fichier R Markdown:
+
+```{r, eval=FALSE, echo=TRUE}
+bibliography: bibliographie.bib
+csl: fichier_telechargé.csl
+```
+
+Après le dernier paragraphe du document, ajouter,
+
+```{r, eval=FALSE, echo=TRUE}
+# References
+```
+
+Exporter vos références au format `bibtex` dans un fichier `bibliographie.bib` et le placer dans le même dossier que le fichier R Markdown.
+
+## R markdown : citer (2)
+
+Exemple de fichier bibtex :
+
+```{r, eval=FALSE, echo=TRUE}
+@article{wan_analytical_2012,
+	title = {Analytical {Sociology}: {A} {Bungean} {Appreciation}},
+	volume = {21},
+	issn = {0926-7220, 1573-1901},
+	shorttitle = {Analytical {Sociology}},
+	url = {http://link.springer.com/10.1007/s11191-011-9427-3},
+	doi = {10.1007/s11191-011-9427-3},
+	language = {en},
+	number = {10},
+	urldate = {2018-02-16},
+	journal = {Science \& Education},
+	author = {Wan, Poe Yu-ze},
+	month = oct,
+	year = {2012},
+	pages = {1545--1565}
+}
+``` 
+
+
+
+
+
+## R markdown : citer (3)
+
+```{r, eval=FALSE, echo=TRUE}
+exemple [voir @wan_analytical_2012, pp. 1550-1560 ou
+         @kuhn_structure_1996, ch. 4].
+
+exemple [@kuhn_structure_1996; @lebart_visualizations_1998].
+
+Kuhn [-@kuhn_structure_1996] ajoute...
+
+@wan_analytical_2012 [p. 1563] démontre ...
+``` 
+
+
+## R markdown : pdf output et écrire en français
+
+```{r, eval=FALSE, echo=TRUE}
+---
+title: "Untitled"
+lang: fr
+author: "Jean-Pierre Müller (jean-pierre.muelller@unil.ch)"
+date: "14 octobre 2018"
+geometry: "left=3cm,right=3cm,top=2cm,bottom=2cm"
+output: 
+    pdf_document:
+        toc: true
+        number_sections: true
+documentclass: article
+classoption: landscape, a4paper
+bibliography: bibliographie.bib
+csl: sociological-methodology.csl
+---
+``` 
+
+
+## R markdown : gestion fine de tableaux et graphiques
+
+- Tableaux:
+    * créer un `data.frame` dans un bloc
+    * Et l'afficher en suite dans un 2ème bloc.
+
+- Graphiques, Images: il est possible d'utiliser
+
+```{r, eval=FALSE}
+knitr::include_graphics(file)
+```
+
+
+
+## R markdown : calculs longs
+
+
+Si un calcul est particulièrement long où intensif, il est pratique de ne pas l'inclure dans le fichier Markdown.
+
+- préparer un fichier annexe réalisant le calcul.
+- sauvegarder les résultats `save(resultats, file = "xy.RData")`
+- relire les résultats dans l'entête du fichier Markdown avec `load(file=xy.RData")`
+- diffuser aussi le fichier annexe réalisant le calcul
+
+
+
+
+## R markdown : hasard
+
+
+Les fonctions de R simulant des tirages aléatoires constituent
+un autre problème de reproductibilité. Utiliser : 
+
+```{r, eval=FALSE, echo=TRUE}
+set.seed(seed)
+```
+avant tout calcul faisant intervenir des tirages aléatoires.
+
+ou 
+
+utiliser l'instruction d'évaluation des code chunks:
+
+```{r, eval=FALSE, echo=TRUE}
+cache=TRUE
+```
+
+voir https://yihui.name/knitr/options/ .
+
+
+## R markdown : persistance logiciels
+
+
+Les logiciels contiennent des bugs, qui sont corrigés, et donc de nouvelles versions des ces logiciels peuvent amener à des résultats différents de ceux obtenus avec des versions précédentes. Il est possible de corriger ce problème en conservant les versions utilisées lors de la création du fichier. Utiliser :
+
+```{r, eval=FALSE, echo=TRUE}
+library(packrat)
+```
+
+
+## R markdown : présentations
+
+
+Dans __RStudio__, menu __File__  -> __New File__ -> __R Markdown__.
+
+* Sélectionner __Présentation__ .
+* Saisir un titre, un auteur et valider le dialogue.
+
+
+
+## R markdown : présentations (2)
+
+Touches de contrôle:
+
+- 'f': fullscreen mode
+- 'w': widescreen mode
+- 'o': overview mode
+- 'h': code highlight mode
+- 'p': monter les notes du 
+
+
+
+
+## R markdown : poster
+
+
+
+Bucior Ben, Generate Academic Posters in R Markdown and CSS, inspired by « reveal.js »: bbucior/drposter, 2018 [10 juillet 2016]. En ligne: <https://github.com/bbucior/drposter>, consulté le 16.10.2018.
+
+```{r, echo=TRUE,eval=FALSE}
+devtools::install_github("bbucior/drposter", 
+                         dep=FALSE)
+```
+
+*  Menu      
+       __File__  -> __New File__ -> __R Markdown__ -> __From Template__ -> __drposter Poster__
+*  __knit__ génère un fichier `.html` à imprimer à l'aide de __`chrome`__                  
+      (__uniquement!__)
+
+
+## R markdown : poster (2)
+
+Autres solutions :
+
+https://gist.github.com/Pakillo/4854e5d760351206084f6be8abe476b2
+
+## Rmarkdown : Autres formats prédéfinis 
+
+Voir : 
+
+*  Menu  __File__  -> __New File__ -> __R Markdown__ -> __From Template__ ->
+
+Packages R contenant des templates : 
+
+`rticles`, `tint`, `resumer`, `linl`, `tufte`, `prettydoc`...
+
+Voir aussi : http://jianghao.wang/post/2017-12-08-rmarkdown-templates/ 
+
+# Bookdown
+
+## Bookdown
+
+Permet de générer un site web, des fichiers word, odt, ebook et pdf à partir de plusieurs fichiers `.Rmd`.
+
+https://bookdown.org/ 
+
+Xie Yihui, bookdown: Authoring Books and Technical Documents with R Markdown, 2018. En ligne: <https://bookdown.org/yihui/bookdown/>, consulté le 08.09.2018.
+
+## Bookdown (2)
+
+```{r, echo=TRUE,eval=FALSE}
+# stable version on CRAN
+install.packages("bookdown")
+# or development version on GitHub
+# devtools::install_github('rstudio/bookdown')
+```
+
+Télécharger et unzip-er :     
+https://github.com/rstudio/bookdown-demo       
+
+( ou exemple minimal :
+https://github.com/yihui/bookdown-minimal )
+
+## Bookdown (3)
+
+Fermer `Rstudio` et double-cliquer sur `bookdown-demo.Rproj` .
+
+Le quadrant `Environement / History` de `RStudio` affiche maintenant un onglet supplémentaire :
+
+```{r, echo=FALSE, out.width = "100%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/071.png")
+```
+
+Pour générer le "livre", cliquer sur `Build Book`.     
+La page web du livre va s'afficher.
+
+
+## Bookdown (4)
+
+Les principales caractéristiques d'un ouvrage 
+peuvent être gérées dans cet environnement.
+
+* Numérotation des figures et tableaux
+* Index
+* Renvois
+
+La génération du pdf fait appel à de nombreuses fonctionnalités de `xetex`, `xelatex`, ... 
+
+
+## Bookdown (5)
+
+Cela peut devenir compliqué 
+selon ce que l'on veut obtenir. Il vous faudra peut-être utiliser:
+
+```{r, echo=TRUE,eval=FALSE} 
+output: 
+  pdf_document:
+    extra_dependencies:
+      hyperref: ["unicode=true", "breaklinks=true"]
+      lmodern: null
+```
+
+ou, plus général :
+
+```{r, echo=TRUE,eval=FALSE} 
+output:
+  pdf_document:
+    includes:
+      in_header: preamble.tex
+      before_body: doc-prefix.tex
+      after_body: doc-suffix.tex
+```
+
+## Bookdown (6)
+
+Liens :
+
+Casas Pablo, « How to self-publish a book: Customizing Bookdown », Data Science Heroes Blog, 28.08.2018, <https://blog.datascienceheroes.com/how-to-self-publish-a-book-customizing-bookdown/>, consulté le 13.11.2018.
+
+Casas Pablo, « How to self-publish a book on Amazon using Bookdown », Data Science Heroes Blog, 21.08.2018, <https://blog.datascienceheroes.com/how-to-self-publish-a-book/>, consulté le 13.11.2018.
+
+
+
+# Notebooks
+
+## La guerre des notebooks 
+
+__Notebook__
+Equivalent du carnet d'expériences dans un laboratoire (par exemple : http://www.cnrs.fr/infoslabos/cahier-laboratoire/ ) ou des notes de terrain pour l'ethnologue ( par exemple:  https://medium.com/media-ethnography/field-notes-and-participant-observation-in-ethnographic-studies-a-skill-summary-bb74e3881258 ), mais pour les travaux informatiques. 
+
+But annoncé : Reproductibilité. 
+
+Origine : ancienne, mais essor avec les développeurs et utilisateurs de python (= data scientists).
+
+Très utilisé : Perkel Jeffrey M., « Why Jupyter is data scientists’ computational notebook of choice », Nature 563, 30.10.2018, p. 145. En ligne: <https://doi.org/10.1038/d41586-018-07196-1>, consulté le 30.10.2018.
+
+
+## La guerre des notebooks  (2)
+
+__L'attentat__
+
+https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/
+
+__Quelques remarques__
+
+Différence de culture entre statisticiens et informaticiens.
+
+https://yihui.name/en/2018/09/notebook-war/ 
+
+https://minimaxir.com/2017/06/r-notebooks/
+
+
+## R Notebooks
+
+Un `R notebook` permet de générer un fichier `.nb.html` qui peut être ouvert dans un browser web (pour voir le résultat) ou dans RStudio (pour voir le code). C'est un compromis entre la séduction des fichiers `.html` et la possibilité de d'accéder aux coulisses du code.
+
+Dans __RStudio__, menu __File__  -> __New File__ -> __R Notebook__.
+
+Exécuter tous les morceaux de code R et cliquer sur le bouton `Preview`. 
+
+## R Notebooks (2)
+
+Le fichier `.nb.html` est créé :
+
+* vous pouvez l'ouvrir dans un browser web.
+* vous pouvez l'ouvrir depuis `RStudio`; le fichier original `.Rmd` sera recréé et vous pourrez le sauver...
+
+Il est possible aussi de générer le fichier `.Rmd` depuis le menu `Code` du fichier affiché dans un browser.
+
+N.B. : Aucun code R n'est exécuté dans le fichier `.nb.html`.
+
+
+## R Jupyter Notebook
+
+Jupyter : accronyme de `Julia, Python`, et `R`.
+
+Il faut installer `Python` pour l'utiliser :
+
+https://www.python.org/downloads/
+
+(sur linux utiliser le package manager de votre distribution)
+
+
+## Jupyter install - Déconseillé (python seulement)
+
+Avec python seulement et dans un terminal :
+
+```{r, eval=FALSE, echo=TRUE}
+# On Windows
+python -m pip install -U pip setuptools
+# On OS X or Linux
+pip install -U pip setuptools
+```
+ 
+et 
+
+```{r, eval=FALSE, echo=TRUE}
+# Python 3
+pip3 install jupyter
+```
+
+Pour l'utiliser : 
+
+```{r, eval=FALSE, echo=TRUE}
+jupyter notebook
+```
+
+
+## anaconda et conda
+
+De https://geohackweek.github.io/Introductory/01-conda-tutorial/ :
+
+> "__What is Conda?__ conda is an open source package and environment management system for any programming language"
+
+> "__What is Anaconda?__ Anaconda is a distribution of conda. It is a data science platform that comes with a lot of packages."
+
+
+Liens : https://www.anaconda.com/ , https://conda.io/docs/
+
+__Attention__ : Anaconda installe une copie de tous ses composants dans son propre dossier. 
+
+## Installer Jupyter via anaconda 
+
+Installer anaconda :
+
+https://www.anaconda.com/download
+
+et suivre les instructions destinées à votre OS sur:
+
+http://docs.anaconda.com/anaconda/install/
+
+Lancer anaconda sur MacOS ou linux; dans un terminal saisir :
+
+```{r, eval=FALSE, echo=TRUE}
+anaconda-navigator
+```
+
+Sous Windows, utiliser l'entrée du menu `Démarrer...`.
+
+## Anaconda Navigator
+
+
+```{r, echo=FALSE,  out.width = "50%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/073.png")
+```
+
+Ouvrir Jupyter depuis anaconda : 
+cliquer sur le bouton `Launch` de la tuille `Jupyter`.
+
+
+## Utiliser Jupyter 
+
+Une page web http://localhost:8888 s'ouvre :
+
+```{r, echo=FALSE,  out.width = "66%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/075.png")
+```
+
+3 onglets: Files, Running, Clusters 
+
+Créer un nouveau fichier, menu __New__, article __Python 3__
+
+## Utiliser Jupyter (2)
+
+Nouvelle page web :
+
+```{r, echo=FALSE,  out.width = "66%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/074.png")
+```
+
+* Edition et interprétation du code par cellule
+* Essentiellement deux types de cellules
+
+
+## Exemple : Utiliser un notebook existant
+
+Aller sur 
+
+https://github.com/jupyter/jupyter/wiki/A-gallery-of-interesting-Jupyter-Notebooks
+
+et choisir un notebook qui vous intéresse, par exemple :
+
+http://nbviewer.jupyter.org/github/fbkarsdorp/python-course/blob/master/Chapter%201%20-%20Getting%20started.ipynb 
+
+Le télécharger (icône `Download Notebook`), l'ouvrir depuis Jupyter, le compléter / l'exécuter.
+
+Enregistrer une version pdf ou html : menu __File__, __Download as__ .
+
+## Installer le kernel R pour Jupyter
+
+Déconseillé! Depuis un terminal, dans `R` :
+```{r, eval=FALSE, echo=TRUE}
+install.packages(c('repr', 'IRdisplay', 'evaluate', 
+                   'crayon', 'pbdZMQ', 'devtools', 
+                   'uuid', 'digest'))
+devtools::install_github('IRkernel/IRkernel')
+```
+
+```{r, eval=FALSE, echo=TRUE}
+IRkernel::installspec()
+```
+
+et dans le terminal
+
+```{r, eval=FALSE, echo=TRUE}
+pip install rpy2
+```
+
+## Activer R dans Jupyter
+
+Ou l'activer dans anaconda... 
+
+Dans `Anaconda Navigator` : __Environments__
+
+```{r, echo=FALSE,  out.width = "66%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/076.png")
+```
+
+Sélectionner dans la liste des packages à installer :
+
+* `rstudio`, `r-essentials`, `rpy2`, `r-irkernel`
+* et d'autres éléments `r-....` .
+
+Eventuellement créer un nouvel environnement `rstudio`.
+
+
+## Utiliser R dans un Jupyter Notebook
+
+Créer un Notebook `R`, dans Jupyter, dans l'onglet `Files` :
+menu `New`, article `R` .
+
+Les cellules de code sont interpétées comme contenant des commandes `R` :
+
+```{r, echo=FALSE,  out.width = "66%"}
+knitr::include_graphics("Projet_Bonnes_Pratiques-figure/077.png")
+```
+
+
+## Utiliser R dans un Jupyter Python Notebook 
+
+Dans une cellule du Notebook, saisir :
+
+```{r, eval=FALSE, echo=TRUE}
+# charger r magic
+%load_ext rpy2.ipython
+
+# Exemple de code R
+%R require(ggplot2)
+%R y <- 2+2
+%R y
+```
+
+## Jupyter : commandes utiles
+
+Quelques commandes utiles dans une cellule:
+
+```{r, eval=FALSE, echo=TRUE}
+%lsmagic
+?%alias_magic
+?range
+```
+
+
+# Pour terminer
+
+
+## Dernières remarques : Structurer votre projet
+
+
+```{r, eval=FALSE, echo=TRUE}
+library(adapr)
+```
+
+Gelfond Jonathan, Goros Martin, Hernandez Brian et al., « A System for an Accountable Data Analysis Process in R », The R Journal 10 (1), 2018, pp. 6‑21. En ligne: <https://journal.r-project.org/archive/2018/RJ-2018-001/index.html>, consulté le 14.10.2018.
+
+Utile pour un __DMP__ sophistiqué!
+
+## Dernières remarques : Données, anonymisation et protection des données
+
+Vos données doivent être distribuées avec vos fichiers de production des résultats, articles, etc..
+
+Attention de ne pas diffuser des données permettant d'identifier ne serait-ce qu'un seul individu ...
+
+... Il est donc souvent difficile de diffuser un fichier de données brut sans traitement.
+
+Solution: diffuser le fichier de nettoyage des données brutes et de restriction aux variables utilisées dans les analyses.
+Ainsi que le fichier des données pré-traitées obtenu.
+
+## Dernières remarques : Diffuser vos analyses et publications
+
+**https://www.dlcm.ch/     (l'UniL est partenaire)**
+
+Présentation:      
+http://misc.www.switch.ch/media/2018/engines/9%20DLCM_IT_for_Research_Day_2018.pdf
+
+
+**git/SVN**
+
+https://support.rstudio.com/hc/en-us/articles/200532077?version=1.1.447&mode=desktop 
+
+
+**FORS**
+
+https://forsbase.unil.ch/
+
+
+# Happy computing ! ;-)

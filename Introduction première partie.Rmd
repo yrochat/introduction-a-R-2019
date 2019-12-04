@@ -1,0 +1,259 @@
+---
+title: "Introduction à R (première partie)"
+author: "Yannick Rochat (yannick.rochat@unil.ch)"
+date: "4 décembre 2019"
+output:
+  ioslides_presentation
+---
+
+## Le plan de la journée
+
+**Le matin**
+
+* Introduction à R (première partie)
+* Bonnes pratiques dans la gestion, le traitement et la publication des données de la recherche
+
+**L'après-midi**
+
+* Introduction à R (seconde partie)
+
+
+## Première ouverture de RStudio
+
+* Assurez-vous que RStudio soit fermé.
+* Ouvrez le document `Introduction première partie.Rmd` depuis son emplacement dans votre ordinateur.
+
+
+## Introduction à R (première partie)
+
+* Qu'est-ce que R ? 
+* Qu'est-ce que RStudio ?
+* Des ressources utiles
+* Qu'est-ce qu'un package ?
+* Comment installer un package ?
+* Les premières opérations
+
+
+## Qu'est-ce que R ? 
+
+R est un langage de programmation ainsi qu'un logiciel prévu à l'origine pour faire de l'analyse statistique sur Mac sur la base du langage propriétaire S.
+
+Il a rapidement eu du succès, jusqu'à devenir un langage de référence aujourd'hui.
+
+---
+
+R peut par exemple être lancé dans un terminal.
+
+Mais R désigne également une interface de programmation que l'on nomme R GUI, "GUI" signifiant "Graphical User Interface".
+
+R GUI est un logiciel libre.
+
+
+## Qu'est-ce que RStudio ?
+
+RStudio est un environnement permettant de programmer en R, c'est-à-dire un peu plus qu'une simple interface graphique.
+
+---
+
+En plus d'afficher une console (en bas à gauche, là où le code est exécuté) et une fenêtre de script (en haut à gauche, là où l'on rédige le code que l'on veut réutiliser), RStudio permet par exemple de connaître en tout temps les variables enregistrées en mémoire, ou encore d'utiliser un notebook tel que celui-ci.
+
+
+## Des ressources 
+
+**Introduction à R et au tidyverse** de Julien Barnier
+
+https://juba.github.io/tidyverse
+
+**R for Data Science** de Garrett Grolemund & Hadley Wickham
+
+http://r4ds.had.co.nz/
+
+**Les cheatsheets de RStudio**
+
+https://www.rstudio.com/resources/cheatsheets/
+
+----
+
+Il existe de nombreuses collections proposant des livres traitant de R : livres d'introduction, de perfectionnement, d'introduction à un package ou à une méthode en particulier.
+
+* No Starch Press (en général très simple)
+* O'Reilly (beaucoup d'offres)
+* Use R! chez Springer (en général spécialisé)
+
+En particulier, [il est utile d'aller consulter les livres proposés par RStudio](https://rstudio.com/resources/books/) (consultables gratuitement).
+
+## Qu'est-ce qu'un package ?
+
+Un package est un ensemble de fonctions réunies souvent autour d'une thématique.
+
+----
+
+Un package doit tout d'abord être installé avec la fonction `install.packages` avant d'être chargé avec la fonction `library`.
+
+Un package doit être installé pour pouvoir être chargé. Il n'y a besoin de faire cette étape qu'une fois, à moins d'une mise à jour.
+
+Un package que l'on souhaite utiliser doit être chargé à chaque utilisation de R.
+
+Un certain nombre de packages sont installés et chargés d'office lorsque R est lancé pour la première fois.
+
+---- 
+
+Toutes les fonctions du package `base`.
+
+```{r eval = FALSE}
+help(package="base")
+```
+
+----
+
+On peut explorer les packages par exemple à travers les *task views*.
+
+https://cran.r-project.org/web/views/
+
+----
+
+La gestion des packages peut se faire également avec l'onglet "Packages" dans la fenêtre en bas à droite de RStudio.
+
+Par exemple, plus tard dans ce cours, nous utiliserons le package `rmarkdown` pour manipuler des notebooks, ou `ggplot2` pour réaliser des visualisations de données.
+
+
+## Les premières opérations
+
+
+```{r}
+## Une simple addition
+4 + 3         
+```
+
+----
+
+```{r}
+## Priorité des opérations
+2^2 + 3*4     
+
+```
+
+
+----
+
+```{r}
+## Sauvegarde d'une valeur dans une variable
+z <- 12.5
+z
+```
+
+---
+
+Addition de deux variables
+
+```{r}
+x <- 12.5
+y <- 7.5
+x + y
+```
+
+----
+
+### Exercice
+
+Familiarisez-vous avec R et RStudio, modifiez les nombres dans chacun des blocs ci-dessus, faites des essais, regardez ce qui fonctionne et ce qui ne fonctionne pas :-)
+
+Vous pouvez toujours annuler les modifications, ou re-télécharger le document, si besoin.
+
+----
+
+### Enregistrer un vecteur
+
+```{r}
+a <- c(4, 5, 3)
+a
+```
+
+----
+
+### Les classes
+
+* "character"
+* "complex"
+* "double"
+* "expression"
+* "integer"
+* "list"
+* "logical"
+* "numeric"
+* "vector"
+* "function"
+* etc.
+
+----
+
+### Chaînes de caractères
+
+Les chaînes de caractères sont des assemblages de symboles.
+
+```{r}
+b <- "introduction"
+b
+```
+
+----
+
+Il existe de nombreuses fonctions pour les manipuler. 
+
+Par exemple pour connaître leur longueur.
+
+```{r}
+nchar(b)
+```
+
+----
+
+Ou pour créer une nouvelle chaîne à partir de deux autres.
+
+```{r}
+c <- "à R"
+paste(b, c)
+```
+
+----
+
+### Tableau de données
+
+Les tableaux de données sont un type d'objets parmi les plus utilisés sur R.
+
+Un tableau de données -- un *data frame* -- contient en colonnes des variables pouvant être de plusieurs types (numériques, ordinales, catégorielles, logique, etc.) et en ligne les observations.
+
+----
+
+Par exemple,
+
+```{r}
+df <- data.frame(age = c(10, 11, 9), 
+        nom = c("Arthur", "Béatrice", "Camille"), 
+        taille = factor(c("grand", "petit", "moyen"), 
+         levels = c("petit", "moyen", "grand")),
+        test = c(TRUE, TRUE, FALSE))
+df
+
+```
+
+----
+
+On en explore la structure avec la fonction `str`.
+
+```{r}
+str(df)
+```
+
+
+## Bonnes pratiques
+
+Nous allons maintenant passer en revue le fonctionnement de ce que vous avez devant les yeux: un notebook.
+
+
+
+
+
+
+
+
